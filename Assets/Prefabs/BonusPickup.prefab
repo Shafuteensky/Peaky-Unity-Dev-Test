@@ -96,7 +96,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7814404201138541296}
   - component: {fileID: 4320636230213729417}
-  - component: {fileID: 3006762277903512854}
+  - component: {fileID: 5217064167445092161}
   m_Layer: 6
   m_Name: BonusPickup
   m_TagString: Pickups
@@ -141,7 +141,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3006762277903512854
+--- !u!114 &5217064167445092161
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
