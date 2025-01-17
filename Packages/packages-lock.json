@@ -1,7 +1,5 @@
 {
   "dependencies": {
-<<<<<<< Updated upstream
-=======
     "com.unity.ext.nunit": {
       "version": "2.0.5",
       "depth": 2,
@@ -27,7 +25,6 @@
       },
       "url": "https://packages.unity.com"
     },
->>>>>>> Stashed changes
     "com.unity.multiplayer.center": {
       "version": "1.0.0",
       "depth": 0,
@@ -36,8 +33,6 @@
         "com.unity.modules.uielements": "1.0.0"
       }
     },
-<<<<<<< Updated upstream
-=======
     "com.unity.test-framework": {
       "version": "1.4.5",
       "depth": 1,
@@ -58,7 +53,6 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
->>>>>>> Stashed changes
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
       "depth": 0,
