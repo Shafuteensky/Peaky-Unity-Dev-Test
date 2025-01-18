@@ -7,7 +7,7 @@ public class GameTime : MonoBehaviour
     [SerializeField] private GameObject timerUI;
     private TextMeshProUGUI timerText;
 
-    private float remainingTime = 30f;
+    public float remainingTime { get; private set; } = 30f;
 
     private void Awake()
     {
@@ -19,8 +19,11 @@ public class GameTime : MonoBehaviour
         if (remainingTime == 0)
             return;
 
+        // Конец счета таймера
         if ((remainingTime -= Time.deltaTime) <= 0)
+        {
             remainingTime = 0;
+        }
 
         // Подгон float к формату времени
         int minutes = (int)(remainingTime / 60);

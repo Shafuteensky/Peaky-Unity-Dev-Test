@@ -1,3 +1,4 @@
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ public class BonusTracker : MonoBehaviour
     private TextMeshProUGUI bonusSumText;
     private TextMeshProUGUI pointSumText;
 
-    private int totalPickupsCount = 0;
+    public int totalPickupsCount = 0;
     public int totalBoostPoints = 0;
     public float averageBoostPoints = 0;
 
@@ -28,6 +29,8 @@ public class BonusTracker : MonoBehaviour
     {
         if (other.CompareTag("Pickups"))
         {
+            other.gameObject.tag = "Untagged";
+
             BonusPickupItem pickup = other.GetComponent<BonusPickupItem>();
             if (pickup != null)
             {
@@ -40,6 +43,28 @@ public class BonusTracker : MonoBehaviour
 
                 bonusSumText.text = totalPickupsCount.ToString();
                 pointSumText.text = totalBoostPoints.ToString();
+            }
+
+            // Все ли бонусы на карте поднятны
+            GameObject[] pickups = GameObject.FindGameObjectsWithTag("Pickups");
+            if (pickups != null && !pickups.Any())
+            {
+                Time.timeScale = 0;
+
+                // Сохранение счета сессии
+                ScoreRecord scoreRecord = new ScoreRecord();
+                GameTime gameTime = this.GetComponent<GameTime>();
+
+                scoreRecord.time = gameTime.remainingTime;
+                scoreRecord.totalPoints = totalBoostPoints;
+                scoreRecord.totalBonuses = totalPickupsCount;
+
+                SaveManager.SaveScore(scoreRecord);
+
+                // Открытие экрана топ 10 сессий
+                GameObject worldScripts = GameObject.FindWithTag("GameController");
+                ScenesManager.SetUIVisibility(false);
+                ScenesManager.LoadSceneAdditive("GameOver", this);
             }
         }
     }

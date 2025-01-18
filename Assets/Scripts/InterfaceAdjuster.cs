@@ -35,4 +35,11 @@ public class InterfaceAdjuster : MonoBehaviour
         rectTransform.anchorMin = new Vector2(0, safeArea.yMin / Screen.height);  // ”станавливаем минимальное значение €кор€ по вертикали
         rectTransform.anchorMax = new Vector2(1, (safeArea.yMin + safeAreaHeight) / Screen.height); // ћаксимальное значение €кор€ по вертикали
     }
+
+    // --------------------
+
+    public void Pause()
+    {
+        ScenesManager.Pause(this);
+    }
 }

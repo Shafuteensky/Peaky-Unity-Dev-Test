@@ -4,13 +4,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
-public class ScenesManager : MonoBehaviour
+public static class ScenesManager
 {
-    [SerializeField] private GameObject pauseScene;
-
-    // ==========================
-
-    public void Pause()
+    public static void Pause(MonoBehaviour scriptToStartCoroutine)
     {
         if (SceneManager.GetSceneByName("Pause").isLoaded)
         {
@@ -18,26 +14,37 @@ public class ScenesManager : MonoBehaviour
             return;
         }
 
-        LoadSceneAdditive("Pause");
+        SetUIVisibility(false);
+        LoadSceneAdditive("Pause", scriptToStartCoroutine);
         Time.timeScale = 0;
     }
 
-    public void Resume()
+    public static void Resume()
     {
+        SetUIVisibility(true);
         SceneManager.UnloadSceneAsync("Pause");
         Time.timeScale = 1f;
     }
 
     // ------------------------
 
-    // Метод для асинхронной загрузки сцены и добавления её к текущей сцене
-    private void LoadSceneAdditive(string sceneName)
+    public static void SetUIVisibility(bool isVisible)
     {
-        StartCoroutine(LoadSceneCoroutine(sceneName));
+        GameObject UI = GameObject.FindWithTag("UI");
+        if (UI != null)
+            UI.GetComponent<Canvas>().enabled = isVisible;
+    }
+
+    // ------------------------
+
+    // Метод для асинхронной загрузки сцены и добавления её к текущей сцене
+    public static void LoadSceneAdditive(string sceneName, MonoBehaviour scriptToStartCoroutine)
+    {
+        scriptToStartCoroutine.StartCoroutine(LoadSceneCoroutine(sceneName));
     }
 
     // Корутина для асинхронной загрузки сцены
-    private IEnumerator LoadSceneCoroutine(string sceneName)
+    private static IEnumerator LoadSceneCoroutine(string sceneName)
     {
         AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
 

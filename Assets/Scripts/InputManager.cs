@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
-    [SerializeField] private ScenesManager scenesManager;
-
     [field: NonSerialized] public float moveAmount { get; private set; } 
     [field: SerializeField] public Vector2 movementInput { get; private set; }
     [field: NonSerialized] public float verticalInput { get; private set; }
@@ -40,7 +38,7 @@ public class InputManager : MonoBehaviour
         playerInput.PlayerLocomotion.Jump.performed += context => jumpInput = true;
 
         // Подписка на инпут действий
-        playerInput.Actions.Pause.performed += context => scenesManager?.Pause();
+        playerInput.Actions.Pause.performed += context => ScenesManager.Pause(this);
     }
 
     private void Update()
