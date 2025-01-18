@@ -125,6 +125,34 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Actions"",
+            ""id"": ""de967ce6-a5d1-4dc0-800c-d80d0f38d2a4"",
+            ""actions"": [
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""cfabcc9e-2e18-46ed-b468-16e39ab1a857"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""a8deb2c5-ead8-4371-9be3-4dd5590f2352"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -133,11 +161,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_PlayerLocomotion = asset.FindActionMap("PlayerLocomotion", throwIfNotFound: true);
         m_PlayerLocomotion_Movement = m_PlayerLocomotion.FindAction("Movement", throwIfNotFound: true);
         m_PlayerLocomotion_Jump = m_PlayerLocomotion.FindAction("Jump", throwIfNotFound: true);
+        // Actions
+        m_Actions = asset.FindActionMap("Actions", throwIfNotFound: true);
+        m_Actions_Pause = m_Actions.FindAction("Pause", throwIfNotFound: true);
     }
 
     ~@PlayerInput()
     {
         UnityEngine.Debug.Assert(!m_PlayerLocomotion.enabled, "This will cause a leak and performance issues, PlayerInput.PlayerLocomotion.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Actions.enabled, "This will cause a leak and performance issues, PlayerInput.Actions.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -249,9 +281,59 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         }
     }
     public PlayerLocomotionActions @PlayerLocomotion => new PlayerLocomotionActions(this);
+
+    // Actions
+    private readonly InputActionMap m_Actions;
+    private List<IActionsActions> m_ActionsActionsCallbackInterfaces = new List<IActionsActions>();
+    private readonly InputAction m_Actions_Pause;
+    public struct ActionsActions
+    {
+        private @PlayerInput m_Wrapper;
+        public ActionsActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Pause => m_Wrapper.m_Actions_Pause;
+        public InputActionMap Get() { return m_Wrapper.m_Actions; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(ActionsActions set) { return set.Get(); }
+        public void AddCallbacks(IActionsActions instance)
+        {
+            if (instance == null || m_Wrapper.m_ActionsActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_ActionsActionsCallbackInterfaces.Add(instance);
+            @Pause.started += instance.OnPause;
+            @Pause.performed += instance.OnPause;
+            @Pause.canceled += instance.OnPause;
+        }
+
+        private void UnregisterCallbacks(IActionsActions instance)
+        {
+            @Pause.started -= instance.OnPause;
+            @Pause.performed -= instance.OnPause;
+            @Pause.canceled -= instance.OnPause;
+        }
+
+        public void RemoveCallbacks(IActionsActions instance)
+        {
+            if (m_Wrapper.m_ActionsActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IActionsActions instance)
+        {
+            foreach (var item in m_Wrapper.m_ActionsActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_ActionsActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public ActionsActions @Actions => new ActionsActions(this);
     public interface IPlayerLocomotionActions
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+    }
+    public interface IActionsActions
+    {
+        void OnPause(InputAction.CallbackContext context);
     }
 }
