@@ -51,4 +51,28 @@ public static class ScenesManager
         while (!asyncOperation.isDone)
             yield return null;
     }
+
+    // ------------------------
+
+    public static void SaveScoreAndLoadGameOver()
+    { 
+        Time.timeScale = 0;
+
+        // Сохранение счета сессии
+        ScoreRecord scoreRecord = new ScoreRecord();
+        GameObject player = GameObject.FindWithTag("Player");
+        GameTime gameTime = player.GetComponent<GameTime>();
+        BonusTracker bonusTracker = player.GetComponent<BonusTracker>();
+
+        scoreRecord.time = gameTime.remainingTime;
+        scoreRecord.totalPoints = bonusTracker.totalBoostPoints;
+        scoreRecord.totalBonuses = bonusTracker.totalPickupsCount;
+
+        SaveManager.SaveScore(scoreRecord);
+
+        // Открытие экрана топ 10 сессий
+        GameObject worldScripts = GameObject.FindWithTag("GameController");
+        ScenesManager.SetUIVisibility(false);
+        ScenesManager.LoadSceneAdditive("GameOver", bonusTracker);
+    }
 }

@@ -23,6 +23,7 @@ public class GameTime : MonoBehaviour
         if ((remainingTime -= Time.deltaTime) <= 0)
         {
             remainingTime = 0;
+            ScenesManager.SaveScoreAndLoadGameOver();
         }
 
         // Подгон float к формату времени
